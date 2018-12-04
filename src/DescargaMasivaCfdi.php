@@ -1,6 +1,8 @@
 <?php
 namespace inquid\yii_sat;
 
+use DOMDocument;
+use DOMXPath;
 /**
  * Libreria para descarga masiva de XMLs desde el SAT
  * Version: 9.4

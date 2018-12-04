@@ -2,6 +2,9 @@
 
 namespace inquid\yii_sat;
 
+use Yii;
+use inquid\yii_sat\DescargaMasivaCfdi;
+
 /**
  * Created by PhpStorm.
  * User: gogl92
@@ -19,15 +22,20 @@ class DownloadHandler extends \yii\base\Component
     public $cerFile;
     public $keyFile;
     public $password;
+    public $session = null;
 
     public function init()
     {
         parent::init();
         $this->descargaCfdi = new DescargaMasivaCfdi();
+        $this->session = Yii::$app->session;
     }
 
     public function login()
     {
+        if ($this->session->get('session_sat') != null) {
+            return $this->session->get('session_sat');
+        }
         $certificado = new UtilCertificado();
         $ok = $certificado->loadFiles(
             $this->cerFile,
@@ -38,21 +46,21 @@ class DownloadHandler extends \yii\base\Component
             // iniciar sesion en el SAT
             $ok = $this->descargaCfdi->iniciarSesionFiel($certificado);
             if ($ok) {
-                echo json_response(array(
+                $this->session->set('session_sat', $this->descargaCfdi->obtenerSesion());
+                return [
                     'mensaje' => 'Se ha iniciado la sesión',
                     'sesion' => $this->descargaCfdi->obtenerSesion()
-                ));
+                ];
             } else {
-                echo json_response(array(
-                    'mensaje' => 'Ha ocurrido un error al iniciar sesión. Intente nuevamente',
-                ));
+                $this->session->set('session_sat', null);
+                return null;
             }
         } else {
-            echo json_response(array(
-                'mensaje' => 'Verifique que los archivos corresponden con la contraseña e intente nuevamente',
-            ));
+            $this->session->set('session_sat', null);
+            return null;
         }
+        $this->session->set('session_sat', null);
+        return null;
     }
-
 
 }
