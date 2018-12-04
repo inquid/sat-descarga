@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "inquid\\yii_sat\\": ""
+            "inquid\\yii_sat\\": "src"
         }
     }
 }
