@@ -209,10 +209,11 @@ class DescargaMasivaCfdi {
      * @return array objetos XmlInfo de los XML encontrados
      */
     public function buscar($filtros) {
-        if(get_class($filtros) == 'BusquedaEmitidos') {
+        echo "__ ".get_class($filtros)." __";
+        if(get_class($filtros) == 'inquid\yii_sat\BusquedaEmitidos') {
             $url = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaEmisor.aspx';
             $modulo = 'emitidos';
-        }elseif(get_class($filtros) == 'BusquedaRecibidos') {
+        }elseif(get_class($filtros) == 'inquid\yii_sat\BusquedaRecibidos') {
             $url = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaReceptor.aspx';
             $modulo = 'recibidos';
         }else{

@@ -43,11 +43,6 @@ class DownloadHandler extends \yii\base\Component
             // iniciar sesion en el SAT
             $ok = $this->descargaCfdi->iniciarSesionFiel($certificado);
             if ($ok) {
-                $this->session->set('session_sat', $this->descargaCfdi->obtenerSesion());
-                $filtros = new BusquedaRecibidos();
-                $filtros->establecerFecha(2018, 10);
-                $xmlInfoArr = $this->descargaCfdi->buscar($filtros);
-                print_r($xmlInfoArr);
                 return true;
             } else {
                 return false;
@@ -61,7 +56,7 @@ class DownloadHandler extends \yii\base\Component
     public function buscarRecibidos($anio, $mes, $dia = null)
     {
         $filtros = new BusquedaRecibidos();
-        $filtros->establecerFecha(2018, 10);
+        $filtros->establecerFecha($anio, $mes, $dia);
 
         $xmlInfoArr = $this->descargaCfdi->buscar($filtros);
         if ($xmlInfoArr) {
@@ -71,9 +66,9 @@ class DownloadHandler extends \yii\base\Component
             }
             return $items;
         } else {
-            return ['dsaksldñlas2'];
+            return ['error' => 'Empty Return'];
         }
-        return ['dsaksldñlas'];
+        return ['error' => 'Error in Login'];
     }
 
     public function buscarEmitidos($anio_i, $mes_i, $dia_i, $anio_f, $mes_f, $dia_f)
