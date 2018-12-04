@@ -25,8 +25,20 @@ to the require section of your `composer.json` file.
 Usage
 -----
 
-Once the extension is installed, simply use it in your code by  :
+Se requiere que se configure en tu archivo de configuración web :
+```
+        'descarga_sat' => [
+            'class' => 'inquid\yii_sat\DownloadHandler',
+            'cerFile' => '...path to cer...',
+            'keyFile' => '...path to key...',
+            'password' => '...password...'
+        ],
+```
 
 ```php
-<?= \inquid\yii_sat\AutoloadExample::widget(); ?>
+<?=         $login = Yii::$app->descarga_sat->login();
+            if ($login) {
+                $recibidos = Yii::$app->descarga_sat->buscarRecibidos('2018', '12');
+                $descargar = Yii::$app->descarga_sat->descargarXml($recibidos);
+            } ?>
 ```

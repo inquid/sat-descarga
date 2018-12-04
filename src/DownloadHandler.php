@@ -95,4 +95,12 @@ class DownloadHandler extends \yii\base\Component
         }
     }
 
+    public function descargarXml($xmls)
+    {
+        $descarga = new DescargaAsincrona($this->downloadMaxSimultaneous);
+        foreach ($xmls as $xml) {
+            $descarga->agregarXml($xml['urlDescargaXml'], $this->downloadPath, $xml['folioFiscal']);
+        }
+        $descarga->procesar();
+    }
 }

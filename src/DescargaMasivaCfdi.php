@@ -209,7 +209,6 @@ class DescargaMasivaCfdi {
      * @return array objetos XmlInfo de los XML encontrados
      */
     public function buscar($filtros) {
-        echo "__ ".get_class($filtros)." __";
         if(get_class($filtros) == 'inquid\yii_sat\BusquedaEmitidos') {
             $url = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaEmisor.aspx';
             $modulo = 'emitidos';
