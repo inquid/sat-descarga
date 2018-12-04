@@ -33,9 +33,6 @@ class DownloadHandler extends \yii\base\Component
 
     public function login()
     {
-        if ($this->session->get('session_sat') != null) {
-            return $this->session->get('session_sat');
-        }
         $certificado = new UtilCertificado();
         $ok = $certificado->loadFiles(
             $this->cerFile,
@@ -47,20 +44,60 @@ class DownloadHandler extends \yii\base\Component
             $ok = $this->descargaCfdi->iniciarSesionFiel($certificado);
             if ($ok) {
                 $this->session->set('session_sat', $this->descargaCfdi->obtenerSesion());
-                return [
-                    'mensaje' => 'Se ha iniciado la sesión',
-                    'sesion' => $this->descargaCfdi->obtenerSesion()
-                ];
+                $filtros = new BusquedaRecibidos();
+                $filtros->establecerFecha(2018, 10);
+                $xmlInfoArr = $this->descargaCfdi->buscar($filtros);
+                print_r($xmlInfoArr);
+                return true;
             } else {
-                $this->session->set('session_sat', null);
-                return null;
+                return false;
             }
         } else {
-            $this->session->set('session_sat', null);
-            return null;
+            return false;
         }
-        $this->session->set('session_sat', null);
-        return null;
+        return false;
+    }
+
+    public function buscarRecibidos($anio, $mes, $dia = null)
+    {
+        $filtros = new BusquedaRecibidos();
+        $filtros->establecerFecha(2018, 10);
+
+        $xmlInfoArr = $this->descargaCfdi->buscar($filtros);
+        if ($xmlInfoArr) {
+            $items = array();
+            foreach ($xmlInfoArr as $xmlInfo) {
+                $items[] = (array)$xmlInfo;
+            }
+            return $items;
+        } else {
+            return ['dsaksldñlas2'];
+        }
+        return ['dsaksldñlas'];
+    }
+
+    public function buscarEmitidos($anio_i, $mes_i, $dia_i, $anio_f, $mes_f, $dia_f)
+    {
+        $filtros = new BusquedaEmitidos();
+        $filtros->establecerFechaInicial($anio_i, $mes_i, $dia_i);
+        $filtros->establecerFechaFinal($anio_f, $mes_f, $dia_f);
+
+        $xmlInfoArr = $this->descargaCfdi->buscar($filtros);
+        if ($xmlInfoArr) {
+            $items = array();
+            foreach ($xmlInfoArr as $xmlInfo) {
+                $items[] = (array)$xmlInfo;
+            }
+            return array(
+                'items' => $items,
+                'sesion' => $descargaCfdi->obtenerSesion()
+            );
+        } else {
+            return array(
+                'mensaje' => 'No se han encontrado CFDIs',
+                'sesion' => $descargaCfdi->obtenerSesion()
+            );
+        }
     }
 
 }
