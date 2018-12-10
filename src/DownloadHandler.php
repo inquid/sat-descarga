@@ -57,7 +57,8 @@ class DownloadHandler extends \yii\base\Component
     {
         $filtros = new BusquedaRecibidos();
         $filtros->establecerFecha($anio, $mes, $dia);
-        $filtros->establecerRfcEmisor($rfc);
+        if ($rfc != null)
+            $filtros->establecerRfcEmisor($rfc);
         $xmlInfoArr = $this->descargaCfdi->buscar($filtros);
         if ($xmlInfoArr) {
             $items = array();
