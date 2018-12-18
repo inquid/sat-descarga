@@ -64,7 +64,6 @@ class DescargaAsincrona {
         $this->mc->execute();
         $this->timeSec = microtime(true) - $time;
         $this->mc = null;
-
         return true;
     }
 
@@ -84,8 +83,16 @@ class DescargaAsincrona {
         return $this->resultados;
     }
 
+    /**
+     * Updated
+     * @param $str
+     * @param $dir
+     * @param $nombre
+     * @param $ext
+     * @return bool
+     */
     private function guardarArchivo($str, $dir, $nombre, $ext) {
-        $resource = fopen($dir.DIRECTORY_SEPARATOR.$nombre.'.'.$ext, 'w');
+        $resource = fopen(\Yii::getAlias('@app/web/'.$dir.DIRECTORY_SEPARATOR.$nombre.'.'.$ext), 'w');
         $saved = false;
         if(!empty($str)) {
             $bytes = fwrite($resource, $str);

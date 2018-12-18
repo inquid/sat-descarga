@@ -22,13 +22,11 @@ class DownloadHandler extends \yii\base\Component
     public $cerFile;
     public $keyFile;
     public $password;
-    public $session = null;
 
     public function init()
     {
         parent::init();
         $this->descargaCfdi = new DescargaMasivaCfdi();
-        $this->session = Yii::$app->session;
     }
 
     public function login()
@@ -53,12 +51,11 @@ class DownloadHandler extends \yii\base\Component
         return false;
     }
 
-    public function buscarRecibidos($anio, $mes, $dia = null, $rfc = null)
+    public function buscarRecibidos($anio, $mes, $dia = null)
     {
         $filtros = new BusquedaRecibidos();
         $filtros->establecerFecha($anio, $mes, $dia);
-        if ($rfc != null)
-            $filtros->establecerRfcEmisor($rfc);
+
         $xmlInfoArr = $this->descargaCfdi->buscar($filtros);
         if ($xmlInfoArr) {
             $items = array();
@@ -102,6 +99,7 @@ class DownloadHandler extends \yii\base\Component
         foreach ($xmls as $xml) {
             $descarga->agregarXml($xml['urlDescargaXml'], $this->downloadPath, $xml['folioFiscal']);
         }
-        $descarga->procesar();
+        return $descarga->procesar();
     }
+
 }
