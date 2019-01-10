@@ -33,8 +33,8 @@ class DownloadHandler extends \yii\base\Component
     {
         $certificado = new UtilCertificado();
         $ok = $certificado->loadFiles(
-            $this->cerFile,
-            $this->keyFile,
+            Yii::getAlias($this->cerFile),
+            Yii::getAlias($this->keyFile),
             $this->password
         );
         if ($ok) {
