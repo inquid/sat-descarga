@@ -1,5 +1,5 @@
 <?php
-namespace inquid\yii_sat;
+namespace inquid\SatDownload;
 
 # actualización 14 noviembre 2018
 

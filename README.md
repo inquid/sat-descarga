@@ -1,6 +1,6 @@
-Yii Descarga SAT
+Descarga SAT
 ================
-Extensión para descarga de XML desde le SAT
+Extensión para descargar de CFDIs (XMLs) desde el SAT
 
 Installation
 ------------
@@ -10,13 +10,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist inquid/yii-sat-descarga "*"
+composer require --prefer-dist inquid/sat-descarga "*"
 ```
 
 or add
 
 ```
-"inquid/yii-sat-descarga": "*"
+"inquid/sat-descarga": "*"
 ```
 
 to the require section of your `composer.json` file.

@@ -1,5 +1,5 @@
 <?php
-namespace inquid\yii_sat;
+namespace inquid\SatDownload;
 
 class MultiCurl {
     private $_curl_version;

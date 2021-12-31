@@ -1,5 +1,5 @@
 <?php
-namespace inquid\yii_sat;
+namespace inquid\SatDownload;
 
 class RespuestaCurl {
     protected $respuesta;

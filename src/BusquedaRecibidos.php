@@ -1,5 +1,5 @@
 <?php
-namespace inquid\yii_sat;
+namespace inquid\SatDownload;
 
 class BusquedaRecibidos {
     const ESTADO_TODOS        = 1;

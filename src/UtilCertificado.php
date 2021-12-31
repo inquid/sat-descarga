@@ -1,5 +1,5 @@
 <?php
-namespace inquid\yii_sat;
+namespace inquid\SatDownload;
 
 /**
  * Clase para trabajar con certificados.
@@ -77,7 +77,6 @@ class UtilCertificado {
             $pKeyId,
             $algo
         );
-        openssl_free_key($pKeyId);
 
         if($signOk){
             return base64_encode($resultado);

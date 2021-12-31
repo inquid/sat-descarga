@@ -1,9 +1,6 @@
 <?php
 
-namespace inquid\yii_sat;
-
-use Yii;
-use inquid\yii_sat\DescargaMasivaCfdi;
+namespace inquid\SatDownload;
 
 /**
  * Created by PhpStorm.
@@ -11,95 +8,125 @@ use inquid\yii_sat\DescargaMasivaCfdi;
  * Date: 12/3/18
  * Time: 11:12 PM
  */
-error_reporting(1);
-ini_set('display_errors', 1);
-
-class DownloadHandler extends \yii\base\Component
+class DownloadHandler
 {
-    public $downloadPath = 'files/';
-    public $downloadMaxSimultaneous = 10;
-    public $descargaCfdi = null;
-    public $cerFile;
-    public $keyFile;
-    public $password;
+    public string $downloadPath = '/tmp/facturas/';
+    public int $downloadMaxSimultaneous = 10;
+    public DescargaMasivaCfdi $massiveCfdiDownloadService;
+    public string $cerFile;
+    public string $keyFile;
+    public string $password;
 
-    public function init()
+    /**
+     * Initialize with the credentials.
+     */
+    public function __construct(string $cerFile, string $keyFile, string $password)
     {
-        parent::init();
-        $this->descargaCfdi = new DescargaMasivaCfdi();
+        $this->massiveCfdiDownloadService = new DescargaMasivaCfdi();
+
+        $this->cerFile = $cerFile;
+        $this->keyFile = $keyFile;
+        $this->password = $password;
     }
 
-    public function login()
+    /**
+     * Logins into the SAT webservice.
+     *
+     * @return bool
+     */
+    public function login(): bool
     {
-        $certificado = new UtilCertificado();
-        $ok = $certificado->loadFiles(
-            Yii::getAlias($this->cerFile),
-            Yii::getAlias($this->keyFile),
+        $certificateUtils = new UtilCertificado();
+        $filesLoadedSuccessfully = $certificateUtils->loadFiles(
+            $this->cerFile,
+            $this->keyFile,
             $this->password
         );
-        if ($ok) {
-            // iniciar sesion en el SAT
-            $ok = $this->descargaCfdi->iniciarSesionFiel($certificado);
-            if ($ok) {
+
+        if ($filesLoadedSuccessfully) {
+            $startSessionWithFiel = $this->massiveCfdiDownloadService->iniciarSesionFiel($certificateUtils);
+            if ($startSessionWithFiel) {
+
                 return true;
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+
         return false;
     }
 
-    public function buscarRecibidos($anio, $mes, $dia = null)
+    /**
+     * Search Incoming bills.
+     *
+     * @param string|int $year
+     * @param string|int $month
+     * @param string|int|null $dia
+     * @return array
+     */
+    public function searchForIncomingCfdis($year, $month, $dia = null): array
     {
-        $filtros = new BusquedaRecibidos();
-        $filtros->establecerFecha($anio, $mes, $dia);
+        $filters = new BusquedaRecibidos();
+        $filters->establecerFecha($year, $month, $dia);
 
-        $xmlInfoArr = $this->descargaCfdi->buscar($filtros);
+        $xmlInfoArr = $this->massiveCfdiDownloadService->buscar($filters);
         if ($xmlInfoArr) {
             $items = array();
             foreach ($xmlInfoArr as $xmlInfo) {
                 $items[] = (array)$xmlInfo;
             }
+
             return $items;
-        } else {
-            return ['error' => 'Empty Return'];
         }
+
         return ['error' => 'Error in Login'];
     }
 
-    public function buscarEmitidos($anio_i, $mes_i, $dia_i, $anio_f, $mes_f, $dia_f)
+    /**
+     * @param $startYear
+     * @param $startMonth
+     * @param $startDay
+     * @param $endYear
+     * @param $endMonth
+     * @param $endDay
+     * @return array
+     */
+    public function searchForCreatedCfdis($startYear, $startMonth, $startDay, $endYear, $endMonth, $endDay): array
     {
-        $filtros = new BusquedaEmitidos();
-        $filtros->establecerFechaInicial($anio_i, $mes_i, $dia_i);
-        $filtros->establecerFechaFinal($anio_f, $mes_f, $dia_f);
+        $filters = new BusquedaEmitidos();
+        $filters->establecerFechaInicial($startYear, $startMonth, $startDay);
+        $filters->establecerFechaFinal($endYear, $endMonth, $endDay);
 
-        $xmlInfoArr = $this->descargaCfdi->buscar($filtros);
+        $xmlInfoArr = $this->massiveCfdiDownloadService->buscar($filters);
         if ($xmlInfoArr) {
             $items = array();
             foreach ($xmlInfoArr as $xmlInfo) {
                 $items[] = (array)$xmlInfo;
             }
-            return array(
+
+            return [
                 'items' => $items,
-                'sesion' => $descargaCfdi->obtenerSesion()
-            );
-        } else {
-            return array(
-                'mensaje' => 'No se han encontrado CFDIs',
-                'sesion' => $descargaCfdi->obtenerSesion()
-            );
+                'sesion' => $this->massiveCfdiDownloadService->obtenerSesion()
+            ];
         }
+
+        return array(
+            'mensaje' => 'No se han encontrado CFDIs',
+            'sesion' => $this->massiveCfdiDownloadService->obtenerSesion()
+        );
     }
 
-    public function descargarXml($xmls)
+    /**
+     * Download the given xmls
+     *
+     * @param array $xmls
+     * @return bool
+     */
+    public function downloadXmls(array $xmls): bool
     {
-        $descarga = new DescargaAsincrona($this->downloadMaxSimultaneous);
+        $asyncDownload = new DescargaAsincrona($this->downloadMaxSimultaneous);
         foreach ($xmls as $xml) {
-            $descarga->agregarXml($xml['urlDescargaXml'], $this->downloadPath, $xml['folioFiscal']);
+            $asyncDownload->agregarXml($xml['urlDescargaXml'], $this->downloadPath, $xml['folioFiscal']);
         }
-        return $descarga->procesar();
-    }
 
+        return $asyncDownload->procesar();
+    }
 }
