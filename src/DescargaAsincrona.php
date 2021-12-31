@@ -92,7 +92,7 @@ class DescargaAsincrona {
      * @return bool
      */
     private function guardarArchivo($str, $dir, $nombre, $ext) {
-        $resource = fopen(\Yii::getAlias('@app/web/'.$dir.DIRECTORY_SEPARATOR.$nombre.'.'.$ext), 'w');
+        $resource = fopen('/tmp/web/'.$dir.DIRECTORY_SEPARATOR.$nombre.'.'.$ext, 'wb');
         $saved = false;
         if(!empty($str)) {
             $bytes = fwrite($resource, $str);

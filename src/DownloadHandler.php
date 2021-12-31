@@ -69,7 +69,7 @@ class DownloadHandler
 
         $xmlInfoArr = $this->massiveCfdiDownloadService->buscar($filters);
         if ($xmlInfoArr) {
-            $items = array();
+            $items = [];
             foreach ($xmlInfoArr as $xmlInfo) {
                 $items[] = (array)$xmlInfo;
             }

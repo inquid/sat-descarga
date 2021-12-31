@@ -3,6 +3,7 @@ namespace inquid\SatDownload;
 
 use DOMDocument;
 use DOMXPath;
+
 /**
  * Libreria para descarga masiva de XMLs desde el SAT
  * Version: 9.4
@@ -206,16 +207,16 @@ class DescargaMasivaCfdi {
      * Permite obtener los CFDI emitidos/recibidos utilizando
      * las opciones que ofrece el portal del SAT
      * @param object $filtros configuración de los filtros a utilizar
-     * @return array objetos XmlInfo de los XML encontrados
+     * @return false objetos XmlInfo de los XML encontrados
      */
     public function buscar($filtros) {
-        if(get_class($filtros) == 'inquid\yii_sat\BusquedaEmitidos') {
+        if (get_class($filtros) === BusquedaEmitidos::class) {
             $url = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaEmisor.aspx';
             $modulo = 'emitidos';
-        }elseif(get_class($filtros) == 'inquid\yii_sat\BusquedaRecibidos') {
+        } elseif (get_class($filtros) === BusquedaRecibidos::class) {
             $url = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaReceptor.aspx';
             $modulo = 'recibidos';
-        }else{
+        } else {
             return false;
         }
 

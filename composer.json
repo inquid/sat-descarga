@@ -19,11 +19,17 @@
     }
   ],
   "require": {
-    "ext-openssl": "*"
+    "php": "7.4 | 8.*",
+    "ext-openssl": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
   },
   "autoload": {
     "psr-4": {
-      "inquid\\SatDownload\\": "src"
+      "inquid\\SatDownload\\": "src",
+      "tests\\": "tests"
     }
   }
 }
