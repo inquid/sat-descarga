@@ -1,29 +1,32 @@
 <?php
+
 namespace inquid\SatDownload;
 
-class BusquedaEmitidos {
-    const ESTADO_TODOS        = 1;
-    const ESTADO_VIGENTE      = 2;
-    const ESTADO_CANCELADO_CA = 3; // Cancelado con aceptación
-    const ESTADO_CANCELADO_SA = 4; // Cancelado sin aceptación
-    const ESTADO_CANCELADO_PV = 5; // Plazo vencido
+class BusquedaEmitidos
+{
+    public const ESTADO_TODOS = 1;
+    public const ESTADO_VIGENTE = 2;
+    public const ESTADO_CANCELADO_CA = 3; // Cancelado con aceptación
+    public const ESTADO_CANCELADO_SA = 4; // Cancelado sin aceptación
+    public const ESTADO_CANCELADO_PV = 5; // Plazo vencido
 
-    private $fecha_inicial;
-    private $hora_inicial    =  '0';
-    private $minuto_inicial  =  '0';
-    private $segundo_inicial =  '0';
-    private $fecha_final;
-    private $hora_final      = '23';
-    private $minuto_final    = '59';
-    private $segundo_final   = '59';
-    private $rfc_receptor    = '';
-    private $folio_fiscal    = '';
-    private $tipo            = '-1';
-    private $tipoBusqueda    = 'fecha';
-    private $estado          = self::ESTADO_TODOS;
+    protected $fecha_inicial;
+    protected $hora_inicial = '0';
+    protected $minuto_inicial = '0';
+    protected $segundo_inicial = '0';
+    protected $fecha_final;
+    protected $hora_final = '23';
+    protected $minuto_final = '59';
+    protected $segundo_final = '59';
+    protected $rfc_receptor = '';
+    protected $folio_fiscal = '';
+    protected $tipo = '-1';
+    protected $tipoBusqueda = 'fecha';
+    protected $estado = self::ESTADO_TODOS;
 
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->hfInicial = date('Y');
         $this->hfFinal = date('n');
     }
@@ -32,7 +35,8 @@ class BusquedaEmitidos {
      * Permite indicar el estado de los CFDI a buscar
      * @param string $estado
      */
-    public function establecerEstado($estado){
+    public function establecerEstado($estado)
+    {
         $this->estado = (int)$estado;
         $this->setTipoBusqueda('fecha');
     }
@@ -43,9 +47,10 @@ class BusquedaEmitidos {
      * @param int $mes mes del 1 a 12
      * @param int $dia día del 1 al 31
      */
-    public function establecerFechaInicial($anio, $mes, $dia){
+    public function establecerFechaInicial($anio, $mes, $dia)
+    {
         $this->hfInicial = (string)$anio;
-        $this->fecha_inicial = 
+        $this->fecha_inicial =
             str_pad($dia, 2, '0', STR_PAD_LEFT) . '/' .
             str_pad($mes, 2, '0', STR_PAD_LEFT) . '/' .
             (string)$anio;
@@ -58,7 +63,8 @@ class BusquedaEmitidos {
      * @param int $mes mes del 1 a 12
      * @param int $dia día del 1 al 31
      */
-    public function establecerFechaFinal($anio, $mes, $dia){
+    public function establecerFechaFinal($anio, $mes, $dia)
+    {
         $this->hfFinal = (string)$anio;
         $this->fecha_final =
             str_pad($dia, 2, '0', STR_PAD_LEFT) . '/' .
@@ -73,7 +79,8 @@ class BusquedaEmitidos {
      * @param int $minuto minuto del 0 al 59
      * @param int $segundo segundo del 0 al 59
      */
-    public function establecerHoraInicial($hora='0', $minuto='0', $segundo='0'){
+    public function establecerHoraInicial($hora = '0', $minuto = '0', $segundo = '0')
+    {
         $this->hora_inicial = (string)$hora;
         $this->minuto_inicial = (string)$minuto;
         $this->segundo_inicial = (string)$segundo;
@@ -86,7 +93,8 @@ class BusquedaEmitidos {
      * @param int $minuto minuto del 0 al 59
      * @param int $segundo segundo del 0 al 59
      */
-    public function establecerHoraFinal($hora='23', $minuto='59', $segundo='59'){
+    public function establecerHoraFinal($hora = '23', $minuto = '59', $segundo = '59')
+    {
         $this->hora_final = (string)$hora;
         $this->minuto_final = (string)$minuto;
         $this->segundo_final = (string)$segundo;
@@ -97,7 +105,8 @@ class BusquedaEmitidos {
      * Permite establecer el RFC del receptor
      * @param string $rfc RFC del emisor
      */
-    public function establecerRfcReceptor($rfc){
+    public function establecerRfcReceptor($rfc)
+    {
         $this->rfc_receptor = $rfc;
         $this->setTipoBusqueda('fecha');
     }
@@ -106,12 +115,14 @@ class BusquedaEmitidos {
      * Permite establecer el UUID
      * @param string $uuid el UUID
      */
-    public function establecerFolioFiscal($uuid){
+    public function establecerFolioFiscal($uuid)
+    {
         $this->folio_fiscal = $uuid;
         $this->setTipoBusqueda('folio');
     }
 
-    public function obtenerFormulario(){
+    public function obtenerFormulario()
+    {
         switch ($this->estado) {
             case self::ESTADO_VIGENTE:
                 $estadoStr = '1';
@@ -137,7 +148,7 @@ class BusquedaEmitidos {
         }
 
         return array(
-            '__ASYNCPOST' =>'true',
+            '__ASYNCPOST' => 'true',
             '__EVENTARGUMENT' => '',
             '__EVENTTARGET' => '',
             '__LASTFOCUS' => '',
@@ -167,7 +178,8 @@ class BusquedaEmitidos {
         );
     }
 
-    public function obtenerFormularioAjax($post, $fuente){
+    public function obtenerFormularioAjax($post, $fuente)
+    {
         $valores = explode('|', $fuente);
         $validos = array(
             'EVENTTARGET',
@@ -177,10 +189,10 @@ class BusquedaEmitidos {
         );
         $valCount = count($valores);
         $items = array();
-        for ($i=0; $i < $valCount; $i++) { 
+        for ($i = 0; $i < $valCount; $i++) {
             $item = $valores[$i];
-            if(in_array($item, $validos)){
-                $items[$item] = $valores[$i+1];
+            if (in_array($item, $validos)) {
+                $items[$item] = $valores[$i + 1];
             }
         }
 
@@ -193,9 +205,10 @@ class BusquedaEmitidos {
         );
     }
 
-    private function setTipoBusqueda($tipo){
+    protected function setTipoBusqueda($tipo)
+    {
         $this->tipoBusqueda = $tipo;
-        if($tipo == 'fecha'){
+        if ($tipo == 'fecha') {
             $this->folio_fiscal = '';
         }
     }

@@ -3,7 +3,7 @@ namespace inquid\SatDownload;
 
 class RespuestaCurl {
     protected $respuesta;
-    private static $cookie = array();
+    protected static $cookie = array();
     public static $defaultOptions = array(
         CURLOPT_ENCODING       => "UTF-8",
         CURLOPT_RETURNTRANSFER => true,

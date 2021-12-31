@@ -6,11 +6,11 @@ namespace inquid\SatDownload;
  */
 
 class UtilCertificado {
-    private $cerFileContent;
-    private $keyFileContent;
-    private $keyPemFileContent;
-    private $keyPassword;
-    private static $openSslFile;
+    protected $cerFileContent;
+    protected $keyFileContent;
+    protected $keyPemFileContent;
+    protected $keyPassword;
+    protected static $openSslFile;
 
 
     public function loadFiles($cerFile, $keyFile, $keyPassword){
@@ -207,7 +207,7 @@ class UtilCertificado {
         return $this->keyFileContent;
     }
 
-    private function getKeyPemContent($keyFile, $keyPwd){
+    protected function getKeyPemContent($keyFile, $keyPwd){
         if(!self::$openSslFile) {
             self::establecerRutaOpenSSL();
         }
@@ -221,7 +221,7 @@ class UtilCertificado {
         return null;
     }
 
-    private static function der2pem($der_data) {
+    protected static function der2pem($der_data) {
         return '-----BEGIN CERTIFICATE-----'.PHP_EOL
             .chunk_split(base64_encode($der_data), 64, PHP_EOL)
             .'-----END CERTIFICATE-----'.PHP_EOL;

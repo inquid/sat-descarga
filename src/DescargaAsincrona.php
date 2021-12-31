@@ -2,11 +2,11 @@
 namespace inquid\SatDownload;
 
 class DescargaAsincrona {
-    private $resultados;
-    private $totalOk;
-    private $totalErr;
-    private $timeSec;
-    private $mc;
+    protected $resultados;
+    protected $totalOk;
+    protected $totalErr;
+    protected $timeSec;
+    protected $mc;
 
     public function __construct($maxSimultaneos=10) {
         $this->mc = new MultiCurl($maxSimultaneos);
@@ -91,7 +91,7 @@ class DescargaAsincrona {
      * @param $ext
      * @return bool
      */
-    private function guardarArchivo($str, $dir, $nombre, $ext) {
+    protected function guardarArchivo($str, $dir, $nombre, $ext) {
         $resource = fopen('/tmp/web/'.$dir.DIRECTORY_SEPARATOR.$nombre.'.'.$ext, 'wb');
         $saved = false;
         if(!empty($str)) {

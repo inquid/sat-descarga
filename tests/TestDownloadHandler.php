@@ -27,7 +27,7 @@ class TestDownloadHandler extends TestCase
 
         $this->cer = 'artifacts/cer.cer';
         $this->key = 'artifacts/key.key';
-        $this->password = 'Artisalie15!';
+        $this->password = 'password';
 
         $this->downloadHandler = new DownloadHandler($this->cer, $this->key, $this->password);
     }
@@ -47,11 +47,9 @@ class TestDownloadHandler extends TestCase
     public function testICanDownloadIncomingXmls(): void
     {
         $this->downloadHandler->login();
+        sleep(3);
         $result = $this->downloadHandler->searchForIncomingCfdis(2021, 11);
         $this->assertIsArray($result);
-        $this->assertStringEqualsFile(
-            '/Users/gogl92/sat-descarga/artifacts/incomingCfdisExample.json',
-            json_encode($result, JSON_THROW_ON_ERROR)
-        );
+        $this->assertEquals(json_decode(file_get_contents('artifacts/incomingCfdisExample.json'), true), $result);
     }
 }
