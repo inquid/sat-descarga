@@ -24,22 +24,17 @@ to the require section of your `composer.json` file.
 
 Usage
 -----
-
-Se requiere que se configure en tu archivo de configuración web :
 ```
-        'descarga_sat' => [
-            'class' => 'inquid\yii_sat\DownloadHandler',
-            'cerFile' => '...path to cer...',
-            'keyFile' => '...path to key...',
-            'password' => '...password...',
-            'downloadPath' => '...xml path...'
-        ],
-```
+<?php
 
-```php
-        $login = Yii::$app->descarga_sat->login();
-        if ($login) {
-            $recibidos = Yii::$app->descarga_sat->buscarRecibidos('2018', '12');
-            $descargar = Yii::$app->descarga_sat->descargarXml($recibidos);
-        }
+include ('vendor/autoload.php');
+
+use inquid\SatDownload;
+
+$downloadHandler = new SatDownload\DownloadHandler('artifacts/cer.cer', 'artifacts/key.key', 'password');
+$downloadHandler->login();
+$result = $downloadHandler->searchForIncomingCfdis(2021, 11);
+
+print_r($result);
+
 ```
